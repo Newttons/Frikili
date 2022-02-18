@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\User as UserUser;
 
 class RegistroController extends AbstractController
 {
@@ -23,12 +24,10 @@ class RegistroController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $user->setBaneado(false);
-            $user->setRoles(['ROLE_USER']);
             $user->setPassword($passwordEncoder->encodePassword($user, $form['password']->getData()));
             $em->persist($user);
             $em->flush();
-            $this->addFlash('exito', 'Se ha registrado exitosamente');
+            $this->addFlash('exito', User::REGISTRO_EXITOSO);
             return $this->redirectToRoute('registro');
         }
 
